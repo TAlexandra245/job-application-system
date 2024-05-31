@@ -6,19 +6,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/companies")
-
+@RequiredArgsConstructor
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final CompanyRepository companyRepository;
 
-    public CompanyController(CompanyService companyService) {
-        this.companyService = companyService;
-    }
-
-    @GetMapping
+    @GetMapping("all")
     public List<Company> getAllCompanies() {
         return companyService.getAllCompanies();
     }
@@ -34,9 +32,22 @@ public class CompanyController {
 
     @PostMapping("/add")
     public ResponseEntity<String> createCompany(@RequestBody Company newCompany) {
+        Optional<Company> company = companyRepository.findCompanyByName(newCompany.getName());
+
+        if (company.isPresent()) {
+            return new ResponseEntity<>(String.format("Company %s already exists", newCompany.getName()), HttpStatus.BAD_REQUEST);
+        }
+
         companyService.createJob(newCompany);
         return new ResponseEntity<>("Company created.", HttpStatus.OK);
     }
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<Company> getCompany(@PathVariable Long id) {
+        Company company = companyService.findById(id);
+        if (company == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(company, HttpStatus.OK);
+    }
 }
