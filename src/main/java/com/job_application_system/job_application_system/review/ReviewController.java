@@ -40,7 +40,7 @@ public class ReviewController {
     public ResponseEntity<String> updateReview(@PathVariable Long companyId, @PathVariable Long reviewId, @RequestBody Review updatedReview) {
         boolean isUpdated = reviewService.updateReview(companyId, reviewId, updatedReview);
         if (isUpdated) {
-            return new ResponseEntity<>("Review updated succesfully", HttpStatus.OK);
+            return new ResponseEntity<>("Review updated successfully", HttpStatus.OK);
         }
 
         return new ResponseEntity<>("Could not update entity", HttpStatus.NOT_FOUND);
