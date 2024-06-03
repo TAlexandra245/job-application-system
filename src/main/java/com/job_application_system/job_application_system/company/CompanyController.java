@@ -1,5 +1,10 @@
 package com.job_application_system.job_application_system.company;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +47,12 @@ public class CompanyController {
         return new ResponseEntity<>("Company created.", HttpStatus.OK);
     }
 
+    @Operation(summary = "Get a company by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the company",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))}),
+            @ApiResponse(responseCode = "404", description = "Company not found", content = @Content)
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompany(@PathVariable Long id) {
         Company company = companyService.findById(id);
